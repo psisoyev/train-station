@@ -1,0 +1,6 @@
+target/
+.idea/
+cache/
+out/
+.metals
+.bloop

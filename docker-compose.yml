@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+  bern:
+    image: "train-station:latest"
+    restart: unless-stopped
+    depends_on:
+      - pulsar
+    ports:
+      - "8081:8081"
+    environment:
+      - "PULSAR_SERVICE_URL=pulsar://pulsar:6650"
+      - "CITY=Bern"
+      - "HTTP_PORT=8081"
+      - "CONNECTED_TO=Zurich"
+
+  zurich:
+    image: "train-station:latest"
+    restart: unless-stopped
+    depends_on:
+      - pulsar
+    ports:
+      - "8082:8082"
+    environment:
+      - "PULSAR_SERVICE_URL=pulsar://pulsar:6650"
+      - "CITY=Zurich"
+      - "HTTP_PORT=8082"
+      - "CONNECTED_TO=Bern"
+
+  pulsar:
+    image: apachepulsar/pulsar:2.5.1
+    ports:
+      - "8080:8080"
+      - "6650:6650"
+    environment:
+      - PULSAR_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+    command: >
+      /bin/bash -c
+      "bin/apply-config-from-env.py conf/standalone.conf
+      && bin/pulsar standalone"
