@@ -22,10 +22,7 @@ object Dependencies {
 
   val newtype = "io.estatico" %% "newtype" % Version.newtype
 
-  val doobieCore = "org.tpolecat" %% "doobie-core" % Version.doobie
-  val doobieH2 = "org.tpolecat" %% "doobie-h2" % Version.doobie
-  val doobieHikari = "org.tpolecat" %% "doobie-hikari" % Version.doobie
-  val doobie = List(doobieCore, doobieH2, doobieHikari)
+  val skunk = "org.tpolecat" %% "skunk-core" % Version.skunk
 
   val circeGeneric = "io.circe" %% "circe-generic" % Version.circe
   val circeCore = "io.circe" %% "circe-core" % Version.circe
@@ -41,6 +38,7 @@ object Dependencies {
   val ciris = "is.cir" %% "ciris" % Version.ciris
 
   val contextApplied = "org.augustjune" %% "context-applied" % Version.contextApplied
+  val kindProjector = "org.typelevel" %% "kind-projector" % Version.kindProjector cross CrossVersion.full
 }
 
 object Version {
@@ -49,11 +47,11 @@ object Version {
   val zioCats = "2.1.4.0"
   val slf4j = "1.7.28"
   val fs2Core = "2.4.2"
-  val kindProjector = "0.10.3"
+  val kindProjector = "0.11.0"
   val http4s = "1.0.0-M4"
   val ciris = "1.2.0"
   val circe = "0.13.0"
-  val doobie = "0.9.0"
+  val skunk = "0.0.20"
   val newtype = "0.4.4"
   val neutron = "0.0.2+37-d92ef362-SNAPSHOT"
   val contextApplied = "0.1.3"
