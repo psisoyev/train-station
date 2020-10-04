@@ -10,7 +10,6 @@ import zio.interop.catz._
 import zio.interop.catz.implicits._
 import zio.test.environment.TestEnvironment
 import zio.test.{ assert, checkM, suite, testM, ZSpec }
-import fs2.Stream
 import zio.test.Assertion.equalTo
 
 object DepartureTrackerSpec extends BaseSpec {
@@ -22,12 +21,8 @@ object DepartureTrackerSpec extends BaseSpec {
             ref            <- Ref.of[F, ExpectedTrains](Map.empty)
             expectedTrains = ExpectedTrains.make[F](ref)
             tracker        = DepartureTracker.make[F](city, expectedTrains)
-            _ <- Stream
-                  .emits(departed)
-                  .through(tracker.run)
-                  .compile
-                  .drain
-            result <- ref.get
+            _              <- departed.traverse(tracker.save)
+            result         <- ref.get
           } yield {
             assert(result.size)(equalTo(departed.count(_.to.city === city)))
           }

@@ -18,7 +18,9 @@ object Departures {
   sealed trait ValidationError
 
   case class Departure(id: TrainId, to: To, time: Expected, actual: Actual)
-  implicit val departureDecoder: Decoder[Departure] = deriveDecoder
+  object Departure {
+    implicit val departureDecoder: Decoder[Departure] = deriveDecoder
+  }
 
   def make[F[_]: Monad: UUIDGen: Logger](
     city: City,

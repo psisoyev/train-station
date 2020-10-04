@@ -4,7 +4,6 @@ import Settings._
 lazy val domain = project
   .settings(commonSettings)
   .settings(libraryDependencies ++= domainDependencies)
-  .settings(higherKinds)
 
 lazy val function = project
   .settings(commonSettings)
@@ -14,19 +13,16 @@ lazy val function = project
 lazy val service = project
   .settings(commonSettings)
   .settings(libraryDependencies ++= serviceDependencies)
-  .settings(higherKinds)
   .dependsOn(domain)
 
 lazy val route = project
   .settings(commonSettings)
   .settings(libraryDependencies ++= routeDependencies)
-  .settings(higherKinds)
   .dependsOn(service)
 
 lazy val server = project
   .settings(commonSettings)
   .settings(libraryDependencies ++= serverDependencies)
-  .settings(higherKinds)
   .dependsOn(route)
 
 lazy val `train-station` = Project("train-station", file("."))

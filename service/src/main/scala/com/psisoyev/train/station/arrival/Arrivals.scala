@@ -22,7 +22,6 @@ object Arrivals {
   case class Arrival(trainId: TrainId, time: Actual)
   object Arrival {
     implicit val arrivalDecoder: Decoder[Arrival] = deriveDecoder
-    implicit val arrivalEncoder: Encoder[Arrival] = deriveEncoder
   }
 
   def make[F[_]: Monad: UUIDGen: Logger](

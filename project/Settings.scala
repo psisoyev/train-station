@@ -33,6 +33,7 @@ object Settings {
       mainClass in Compile := Some("com.psisoyev.train.station.Main"),
 
       addCompilerPlugin(contextApplied),
+      addCompilerPlugin(kindProjector),
 
       dockerBaseImage := "openjdk:jre-alpine",
       dockerUpdateLatest := true
@@ -42,8 +43,6 @@ object Settings {
   val serviceDependencies = List(cats, catsEffect, neutronCore, slf4j, zioCats) ++ zioTest
   val routeDependencies = http4s
   val serverDependencies = List(neutronCirce, ciris) ++ zio
-  val functionDependencies = List(zioCore, neutronFunction) ++ circe ++ doobie
+  val functionDependencies = List(zioCore, neutronFunction, skunk) ++ circe
   val domainDependencies = List(newtype) ++ circe
-
-  val higherKinds = addCompilerPlugin("org.typelevel" %% "kind-projector" % Version.kindProjector)
 }

@@ -1,5 +1,6 @@
 package com.psisoyev.train.station
 
+import com.psisoyev.train.station.Event.Departed
 import com.psisoyev.train.station.UUIDGen._
 import com.psisoyev.train.station.arrival.{ Arrivals, ExpectedTrains }
 import com.psisoyev.train.station.departure.{ DepartureTracker, Departures }
@@ -43,7 +44,8 @@ object Main extends zio.App {
               .emits(consumers)
               .map(_.autoSubscribe)
               .parJoinUnbounded
-              .through(departureTracker.run)
+              .collect { case e: Departed => e }
+              .evalMap(departureTracker.save)
               .compile
               .drain
 
