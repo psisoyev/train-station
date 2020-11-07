@@ -5,7 +5,7 @@ import com.psisoyev.train.station.Event.Arrived
 import com.psisoyev.train.station.Generators._
 import com.psisoyev.train.station.Logger._
 import com.psisoyev.train.station.arrival.Arrivals.Arrival
-import com.psisoyev.train.station.arrival.Arrivals.ValidationError.UnexpectedTrain
+import com.psisoyev.train.station.arrival.Arrivals.ArrivalError.UnexpectedTrain
 import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
 import com.psisoyev.train.station.{ BaseSpec, EventId, To, TrainId }
 import zio.interop.catz._

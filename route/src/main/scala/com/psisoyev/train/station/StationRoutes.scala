@@ -3,9 +3,9 @@ package com.psisoyev.train.station
 import cats.{ Defer, MonadError }
 import cats.implicits._
 import com.psisoyev.train.station.arrival.Arrivals
-import com.psisoyev.train.station.arrival.Arrivals.{ Arrival, ValidationError }
+import com.psisoyev.train.station.arrival.Arrivals.{ Arrival, ArrivalError }
 import com.psisoyev.train.station.departure.Departures
-import com.psisoyev.train.station.departure.Departures.Departure
+import com.psisoyev.train.station.departure.Departures.{ Departure, DepartureError }
 import org.http4s.dsl.Http4sDsl
 import org.http4s.{ HttpRoutes, _ }
 import org.http4s.circe._
@@ -20,14 +20,20 @@ class StationRoutes[F[_]: MonadError[*[_], Throwable]: Defer: JsonDecoder](
       req
         .asJsonDecode[Arrival]
         .flatMap(arrivals.register)
-        .flatMap(_.fold(handleErrors, _ => Ok()))
+        .flatMap(_.fold(handleArrivalErrors, _ => Ok()))
     case req @ POST -> Root / "departure" =>
       req
         .asJsonDecode[Departure]
-        .flatMap(departures.register) >> Ok()
+        .flatMap(departures.register)
+        .flatMap(_.fold(handleDepartureErrors, _ => Ok()))
+
   }
 
-  def handleErrors(error: ValidationError): F[Response[F]] = error match {
-    case ValidationError.UnexpectedTrain(id) => BadRequest(s"Unexpected train $id")
+  def handleArrivalErrors: ArrivalError => F[Response[F]] = {
+    case ArrivalError.UnexpectedTrain(id) => BadRequest(s"Unexpected train $id")
+  }
+
+  def handleDepartureErrors: DepartureError => F[Response[F]] = {
+    case DepartureError.UnexpectedDestination(city) => BadRequest(s"Unexpected city $city")
   }
 }

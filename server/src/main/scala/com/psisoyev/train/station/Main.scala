@@ -25,7 +25,7 @@ object Main extends zio.App {
         case Resources(config, producer, consumers, trainRef) =>
           val expectedTrains   = ExpectedTrains.make[F](trainRef)
           val arrivals         = Arrivals.make[F](config.city, producer, expectedTrains)
-          val departures       = Departures.make[F](config.city, producer)
+          val departures       = Departures.make[F](config.city, config.connectedTo, producer)
           val departureTracker = DepartureTracker.make[F](config.city, expectedTrains)
 
           val routes = new StationRoutes[F](arrivals, departures).routes.orNotFound

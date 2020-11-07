@@ -1,18 +1,18 @@
-package com.psisoyev
+package com.psisoyev.train.station.analytics
 
 import java.nio.charset.StandardCharsets.UTF_8
 
 import cats.effect.{ ContextShift, IO }
 import cats.implicits._
-import com.psisoyev.PersistEvents._
+import com.psisoyev.train.station.analytics.PersistEvents._
 import cr.pulsar.{ Record, WindowContext, WindowFunction }
 import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
 import io.circe.parser.parse
+import natchez.Trace.Implicits.noop
 import skunk._
 import skunk.codec.all._
 import skunk.implicits._
-import natchez.Trace.Implicits.noop
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

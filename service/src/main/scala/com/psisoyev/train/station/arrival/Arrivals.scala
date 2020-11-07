@@ -3,20 +3,20 @@ package com.psisoyev.train.station.arrival
 import cats.Monad
 import cats.implicits._
 import com.psisoyev.train.station.Event.Arrived
-import com.psisoyev.train.station.arrival.Arrivals.{ Arrival, ValidationError }
+import com.psisoyev.train.station.arrival.Arrivals.{ Arrival, ArrivalError }
 import com.psisoyev.train.station.{ Actual, City, Event, EventId, Logger, To, TrainId, UUIDGen }
 import cr.pulsar.Producer
-import io.circe.{ Decoder, Encoder }
+import io.circe.Decoder
 import io.circe.generic.semiauto._
 
 trait Arrivals[F[_]] {
-  def register(arrival: Arrival): F[Either[ValidationError, Arrived]]
+  def register(arrival: Arrival): F[Either[ArrivalError, Arrived]]
 }
 
 object Arrivals {
-  sealed trait ValidationError
-  object ValidationError {
-    case class UnexpectedTrain(id: TrainId) extends ValidationError
+  sealed trait ArrivalError
+  object ArrivalError {
+    case class UnexpectedTrain(id: TrainId) extends ArrivalError
   }
 
   case class Arrival(trainId: TrainId, time: Actual)
@@ -29,13 +29,13 @@ object Arrivals {
     producer: Producer[F, Event],
     expectedTrains: ExpectedTrains[F]
   ): Arrivals[F] = new Arrivals[F] {
-    def register(arrival: Arrival): F[Either[ValidationError, Arrived]] =
+    def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
       expectedTrains
         .get(arrival.trainId)
         .flatMap {
           case None =>
-            val e: ValidationError = ValidationError.UnexpectedTrain(arrival.trainId)
-            F.info(s"Unexpected error has occurred: $e")
+            val e: ArrivalError = ArrivalError.UnexpectedTrain(arrival.trainId)
+            F.error(s"Tried to create arrival of an unexpected train: $arrival")
               .as(e.asLeft)
           case Some(train) =>
             def arrived: EventId => Arrived =
