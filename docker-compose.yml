@@ -11,7 +11,7 @@ services:
       - "PULSAR_SERVICE_URL=pulsar://pulsar:6650"
       - "CITY=Bern"
       - "HTTP_PORT=8081"
-      - "CONNECTED_TO=Zurich"
+      - "CONNECTED_TO=Zurich,Geneva"
 
   zurich:
     image: "train-station:latest"
@@ -23,6 +23,19 @@ services:
     environment:
       - "PULSAR_SERVICE_URL=pulsar://pulsar:6650"
       - "CITY=Zurich"
+      - "HTTP_PORT=8082"
+      - "CONNECTED_TO=Bern"
+
+  geneva:
+    image: "train-station:latest"
+    restart: unless-stopped
+    depends_on:
+      - pulsar
+    ports:
+      - "8082:8082"
+    environment:
+      - "PULSAR_SERVICE_URL=pulsar://pulsar:6650"
+      - "CITY=Geneva"
       - "HTTP_PORT=8082"
       - "CONNECTED_TO=Bern"
 
