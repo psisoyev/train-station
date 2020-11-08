@@ -27,7 +27,7 @@ When you have successfully built docker images you can start environment:
 docker-compose up -d
 ```
 This will start all the services in the background. All train stations will connect to Apache Pulsar. 
-Services are starting much faster than Apache Pulsar so they will retry until it is ready. 
+Services are starting much faster than Apache Pulsar so they will retry until it is ready.   
 A train station service is ready when you see a similar log message:
 ```[2020-09-30T19:10:52.064Z] Started train station Bern```
 
