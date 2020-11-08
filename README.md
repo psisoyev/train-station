@@ -11,10 +11,11 @@ sbt test
 ```
 
 #### Running
-This repository contains a `docker-compose` file, which includes 3 services: 
+This repository contains a `docker-compose` file, which includes 4 services: 
 * Apache Pulsar
 * Zurich train station
 * Bern train station
+* Geneva train station
 
 First, build docker images of the service by running
 ```sbt
