@@ -30,19 +30,8 @@ object Departures {
     connectedTo: List[City],
     producer: Producer[F, Event]
   ): Departures[F] = new Departures[F] {
-    override def register(departure: Departure): F[Either[DepartureError, Departed]] = {
+    def validated(departure: Departure)(f: => F[Departed]): F[Either[DepartureError, Departed]] = {
       val destination = departure.to.city
-      val departed =
-        F.newEventId.map {
-          Departed(
-            _,
-            departure.id,
-            From(city),
-            departure.to,
-            departure.time,
-            departure.actual.toTimestamp
-          )
-        }
 
       connectedTo.find(_ === destination) match {
         case None =>
@@ -50,10 +39,24 @@ object Departures {
           F.error(s"Tried to departure to an unexpected destination: $departure")
             .as(e.asLeft)
         case _ =>
-          departed
-            .flatTap(producer.send_)
-            .map(_.asRight[DepartureError])
+          f.map(_.asRight[DepartureError])
       }
     }
+
+    override def register(departure: Departure): F[Either[DepartureError, Departed]] =
+      validated(departure) {
+        F.newEventId
+          .map {
+            Departed(
+              _,
+              departure.id,
+              From(city),
+              departure.to,
+              departure.time,
+              departure.actual.toTimestamp
+            )
+          }
+          .flatTap(producer.send_)
+      }
   }
 }

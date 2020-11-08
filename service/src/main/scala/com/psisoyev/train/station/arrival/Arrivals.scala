@@ -5,7 +5,7 @@ import cats.implicits._
 import com.psisoyev.train.station.Event.Arrived
 import com.psisoyev.train.station.arrival.Arrivals.{ Arrival, ArrivalError }
 import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
-import com.psisoyev.train.station.{ Actual, City, Event, EventId, Logger, To, TrainId, UUIDGen }
+import com.psisoyev.train.station.{ Actual, City, Event, Logger, To, TrainId, UUIDGen }
 import cr.pulsar.Producer
 import io.circe.Decoder
 import io.circe.generic.semiauto._
@@ -30,19 +30,7 @@ object Arrivals {
     producer: Producer[F, Event],
     expectedTrains: ExpectedTrains[F]
   ): Arrivals[F] = new Arrivals[F] {
-    def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] = {
-      def arrived(train: ExpectedTrain): F[Arrived] =
-        F.newEventId.map {
-          Arrived(
-            _,
-            arrival.trainId,
-            train.from,
-            To(city),
-            train.time,
-            arrival.time.toTimestamp
-          )
-        }
-
+    def validated(arrival: Arrival)(f: ExpectedTrain => F[Arrived]): F[Either[ArrivalError, Arrived]] =
       expectedTrains
         .get(arrival.trainId)
         .flatMap {
@@ -51,11 +39,24 @@ object Arrivals {
             F.error(s"Tried to create arrival of an unexpected train: $arrival")
               .as(e.asLeft)
           case Some(train) =>
-            arrived(train)
-              .flatTap(a => expectedTrains.remove(a.trainId))
-              .flatTap(producer.send_)
-              .map(_.asRight[ArrivalError])
+            f(train).map(_.asRight[ArrivalError])
         }
-    }
+
+    def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
+      validated(arrival) { train =>
+        F.newEventId
+          .map {
+            Arrived(
+              _,
+              arrival.trainId,
+              train.from,
+              To(city),
+              train.time,
+              arrival.time.toTimestamp
+            )
+          }
+          .flatTap(a => expectedTrains.remove(a.trainId))
+          .flatTap(producer.send_)
+      }
   }
 }

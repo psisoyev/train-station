@@ -27,7 +27,7 @@ object Resources {
       ).withType(Topic.Type.Persistent)
 
     def consumer(client: Pulsar.T, config: Config, city: City): Resource[F, Consumer[F, E]] = {
-      val name         = s"${city.value}-${config.city.value}"
+      val name = s"${city.value}-${config.city.value}"
       val subscription =
         Subscription(Subscription.Name(name))
           .withType(Subscription.Type.Failover)
