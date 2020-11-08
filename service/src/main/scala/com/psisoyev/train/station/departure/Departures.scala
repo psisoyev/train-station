@@ -32,31 +32,28 @@ object Departures {
   ): Departures[F] = new Departures[F] {
     override def register(departure: Departure): F[Either[DepartureError, Departed]] = {
       val destination = departure.to.city
-      val departed: F[Either[DepartureError, Departed]] =
-        F.newEventId
-          .map {
-            Departed(
-              _,
-              departure.id,
-              From(city),
-              departure.to,
-              departure.time,
-              departure.actual.toTimestamp
-            )
-          }
-          .flatTap(producer.send_)
-          .map(_.asRight)
+      val departed =
+        F.newEventId.map {
+          Departed(
+            _,
+            departure.id,
+            From(city),
+            departure.to,
+            departure.time,
+            departure.actual.toTimestamp
+          )
+        }
 
-      val error: F[Either[DepartureError, Departed]] = {
-        val error: DepartureError = DepartureError.UnexpectedDestination(destination)
-        F.error(s"Tried to departure to an unexpected destination: $departure")
-          .as(error.asLeft)
+      connectedTo.find(_ === destination) match {
+        case None =>
+          val e: DepartureError = DepartureError.UnexpectedDestination(destination)
+          F.error(s"Tried to departure to an unexpected destination: $departure")
+            .as(e.asLeft)
+        case _ =>
+          departed
+            .flatTap(producer.send_)
+            .map(_.asRight[DepartureError])
       }
-
-      connectedTo
-        .find(_ === destination)
-        .as(departed)
-        .getOrElse(error)
     }
   }
 }

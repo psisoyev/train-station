@@ -4,6 +4,7 @@ import cats.Monad
 import cats.implicits._
 import com.psisoyev.train.station.Event.Arrived
 import com.psisoyev.train.station.arrival.Arrivals.{ Arrival, ArrivalError }
+import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
 import com.psisoyev.train.station.{ Actual, City, Event, EventId, Logger, To, TrainId, UUIDGen }
 import cr.pulsar.Producer
 import io.circe.Decoder
@@ -29,7 +30,19 @@ object Arrivals {
     producer: Producer[F, Event],
     expectedTrains: ExpectedTrains[F]
   ): Arrivals[F] = new Arrivals[F] {
-    def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
+    def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] = {
+      def arrived(train: ExpectedTrain): F[Arrived] =
+        F.newEventId.map {
+          Arrived(
+            _,
+            arrival.trainId,
+            train.from,
+            To(city),
+            train.time,
+            arrival.time.toTimestamp
+          )
+        }
+
       expectedTrains
         .get(arrival.trainId)
         .flatMap {
@@ -38,21 +51,11 @@ object Arrivals {
             F.error(s"Tried to create arrival of an unexpected train: $arrival")
               .as(e.asLeft)
           case Some(train) =>
-            def arrived: EventId => Arrived =
-              Arrived(
-                _,
-                arrival.trainId,
-                train.from,
-                To(city),
-                train.time,
-                arrival.time.toTimestamp
-              )
-
-            F.newEventId
-              .map(arrived)
+            arrived(train)
               .flatTap(a => expectedTrains.remove(a.trainId))
               .flatTap(producer.send_)
-              .map(_.asRight)
+              .map(_.asRight[ArrivalError])
         }
+    }
   }
 }
