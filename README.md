@@ -2,7 +2,7 @@
 
 ### Demo application based on Apache Pulsar
 The purpose of this application is to show how to build a simple event-driven application on top of Apache Pulsar. 
-This application is written in functional Scala with Tagless Final style and ZIO is used as the main effect.
+This application is written in functional Scala with Tagless Final style and ZIO Task is used as the main effect.
 
 #### Testing
 In order to run unit tests:
@@ -17,7 +17,7 @@ This repository contains a `docker-compose` file, which includes 4 services:
 * Bern train station
 * Geneva train station
 
-First, build docker images of the service by running
+First, build a docker image of the service by running command:
 ```sbt
 sbt docker:publishLocal
 ```
@@ -26,13 +26,13 @@ When you have successfully built docker images you can start environment:
 ```sbt
 docker-compose up -d
 ```
-This will run services in the background. Both train stations will connect to Apache Pulsar. 
+This will start all the services in the background. All train stations will connect to Apache Pulsar. 
 Services are starting much faster than Apache Pulsar so they will retry until it is ready. 
-Train station service is ready when you see a log message:
+A train station service is ready when you see a similar log message:
 ```[2020-09-30T19:10:52.064Z] Started train station Bern```
 
 #### Calling service endpoints
-To test that services are working correctly you can send HTTP requests:
+To test if services are working correctly you can send a `Departure` request:
 ```
 curl --request POST \
   --url http://localhost:8082/departure \
