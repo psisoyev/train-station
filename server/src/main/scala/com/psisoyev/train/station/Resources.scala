@@ -24,11 +24,13 @@ object Resources {
       Topic(
         Topic.Name(city.value.toLowerCase),
         config
-      ).withType(Topic.Type.NonPersistent)
+      ).withType(Topic.Type.Persistent)
 
     def consumer(client: Pulsar.T, config: Config, city: City): Resource[F, Consumer[F, E]] = {
       val name         = s"${city.value}-${config.city.value}"
-      val subscription = Subscription(Subscription.Name(name))
+      val subscription =
+        Subscription(Subscription.Name(name))
+          .withType(Subscription.Type.Failover)
       val options =
         Consumer
           .Options[F, E]()
