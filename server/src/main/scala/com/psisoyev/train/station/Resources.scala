@@ -34,7 +34,6 @@ object Resources {
       val options =
         Consumer
           .Options[F, E]()
-          .withAutoAck
           .withLogger(EventLogger.incomingEvents)
 
       Consumer.withOptions[F, E](client, topic(config.pulsar, city), subscription, options)
