@@ -22,8 +22,6 @@ object Dependencies {
 
   val newtype = "io.estatico" %% "newtype" % Version.newtype
 
-  val skunk = "org.tpolecat" %% "skunk-core" % Version.skunk
-
   val circeGeneric = "io.circe" %% "circe-generic" % Version.circe
   val circeCore = "io.circe" %% "circe-core" % Version.circe
   val circeParser = "io.circe" %% "circe-parser" % Version.circe
@@ -33,7 +31,6 @@ object Dependencies {
 
   val neutronCore = "com.chatroulette" %% "neutron-core" % Version.neutron
   val neutronCirce = "com.chatroulette" %% "neutron-circe" % Version.neutron
-  val neutronFunction = "com.chatroulette" %% "neutron-function" % Version.neutron
 
   val ciris = "is.cir" %% "ciris" % Version.ciris
 
@@ -51,7 +48,6 @@ object Version {
   val http4s = "1.0.0-M4"
   val ciris = "1.2.0"
   val circe = "0.13.0"
-  val skunk = "0.0.20"
   val newtype = "0.4.4"
   val neutron = "0.0.2+37-d92ef362-SNAPSHOT"
   val contextApplied = "0.1.3"

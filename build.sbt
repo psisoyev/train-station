@@ -5,11 +5,6 @@ lazy val domain = project
   .settings(commonSettings)
   .settings(libraryDependencies ++= domainDependencies)
 
-lazy val function = project
-  .settings(commonSettings)
-  .settings(libraryDependencies ++= functionDependencies)
-  .dependsOn(domain)
-
 lazy val service = project
   .settings(commonSettings)
   .settings(libraryDependencies ++= serviceDependencies)
@@ -37,12 +32,10 @@ lazy val `train-station` = Project("train-station", file("."))
     domain,
     service,
     route,
-    server,
-    function
+    server
   )
   .dependsOn(
     domain,
-    function,
     service,
     route,
     server
