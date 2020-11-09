@@ -57,7 +57,3 @@ curl --request POST \
 	"time": "2020-12-03T10:15:30.00Z"
 }'
 ```
-
-#### Analytics - TODO (WIP) 
-This service also contains a Pulsar Function, which saves emitted events to a database. 
-This is not yet ready to be reviewed.
