@@ -16,10 +16,12 @@ object DepartureTracker {
     city: City,
     expectedTrains: ExpectedTrains[F]
   ): DepartureTracker[F] = new DepartureTracker[F] {
-    def save(e: Departed): F[Unit] =
-      if (e.to.city =!= city) F.unit
-      else
+    def save(e: Departed): F[Unit] = {
+      val updateExpectedTrains =
         expectedTrains.update(e.trainId, ExpectedTrain(e.from, e.expected)) *>
           F.info(s"$city is expecting ${e.trainId} from ${e.from} at ${e.expected}")
+
+      updateExpectedTrains.whenA(e.to.city === city)
+    }
   }
 }
