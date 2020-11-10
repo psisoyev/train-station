@@ -44,7 +44,7 @@ jobs:
         run: |
           case ${{ matrix.jobtype }} in
             1)
-              sbt -v "mimaReportBinaryIssues; scalafmtCheckAll; +test;"
+              sbt -v "scalafmtCheckAll; +test;"
               ;;
             2)
               sbt -v "scripted actions/*"
