@@ -15,9 +15,6 @@ jobs:
           - os: windows-latest
             java: 11
             jobtype: 1
-          - os: ubuntu-latest
-            java: 11
-            jobtype: 3
     runs-on: ${{ matrix.os }}
     env:
       # define Java options for both official sbt and sbt-extras
