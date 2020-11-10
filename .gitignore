@@ -4,3 +4,4 @@ cache/
 out/
 .metals
 .bloop
+.bsp
