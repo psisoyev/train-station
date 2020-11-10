@@ -37,7 +37,14 @@ object Config {
       env("PULSAR_TENANT").as[PulsarTenant].withDefault("public"),
       env("PULSAR_NAMESPACE").as[PulsarNamespace].withDefault("default"),
       env("PULSAR_SERVICE_URL").as[PulsarURL].withDefault("pulsar://localhost:6650")
-    ).mapN(PulsarConfig.apply)
+    ).mapN { case (tenant, namespace, url) =>
+      PulsarConfig
+        .Builder
+        .withTenant(tenant)
+        .withNameSpace(namespace)
+        .withURL(url)
+        .build
+    }
 
   private def value: ConfigValue[Config] =
     (

@@ -18,14 +18,12 @@ object DepartureTrackerSpec extends BaseSpec {
       testM("Expect trains departing to $city") {
         checkM(departedList, city) { (departed, city) =>
           for {
-            ref            <- Ref.of[F, ExpectedTrains](Map.empty)
+            ref           <- Ref.of[F, ExpectedTrains](Map.empty)
             expectedTrains = ExpectedTrains.make[F](ref)
             tracker        = DepartureTracker.make[F](city, expectedTrains)
-            _              <- departed.traverse(tracker.save)
-            result         <- ref.get
-          } yield {
-            assert(result.size)(equalTo(departed.count(_.to.city === city)))
-          }
+            _             <- departed.traverse(tracker.save)
+            result        <- ref.get
+          } yield assert(result.size)(equalTo(departed.count(_.to.city === city)))
         }
       }
     )

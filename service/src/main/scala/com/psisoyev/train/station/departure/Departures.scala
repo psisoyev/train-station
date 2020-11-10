@@ -38,7 +38,7 @@ object Departures {
           val e: DepartureError = DepartureError.UnexpectedDestination(destination)
           F.error(s"Tried to departure to an unexpected destination: $departure")
             .as(e.asLeft)
-        case _ =>
+        case _    =>
           f.map(_.asRight[DepartureError])
       }
     }
