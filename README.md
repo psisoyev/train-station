@@ -3,6 +3,7 @@
 ### Demo application based on Apache Pulsar
 The purpose of this application is to show how to build a simple event-driven application on top of Apache Pulsar. 
 This application is written in functional Scala with Tagless Final style and ZIO Task is used as the main effect.
+You can find detailed description of the app in the blog post - https://scala.monster/train-station/
 
 #### Testing
 In order to run unit tests:
