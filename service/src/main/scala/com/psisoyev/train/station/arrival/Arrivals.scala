@@ -34,7 +34,7 @@ object Arrivals {
       expectedTrains
         .get(arrival.trainId)
         .flatMap {
-          case None =>
+          case None        =>
             val e: ArrivalError = ArrivalError.UnexpectedTrain(arrival.trainId)
             F.error(s"Tried to create arrival of an unexpected train: $arrival")
               .as(e.asLeft)

@@ -17,20 +17,18 @@ object DeparturesSpec extends BaseSpec {
         checkM(trainId, to, city, expected, actual) { (trainId, to, city, expected, actual) =>
           for {
             (events, producer) <- fakeProducer[F]
-            departures         = Departures.make[F](city, List(), producer)
+            departures          = Departures.make[F](city, List(), producer)
             result             <- departures.register(Departure(trainId, to, expected, actual))
             newEvents          <- events.get
-          } yield {
-            assert(result)(isLeft(equalTo(DepartureError.UnexpectedDestination(to.city)))) &&
+          } yield assert(result)(isLeft(equalTo(DepartureError.UnexpectedDestination(to.city)))) &&
             assert(newEvents.isEmpty)(isTrue)
-          }
         }
       },
       testM("Register departing train") {
         checkM(trainId, to, city, expected, actual) { (trainId, to, city, expected, actual) =>
           for {
             (events, producer) <- fakeProducer[F]
-            departures         = Departures.make[F](city, List(to.city), producer)
+            departures          = Departures.make[F](city, List(to.city), producer)
             result             <- departures.register(Departure(trainId, to, expected, actual))
             newEvents          <- events.get
           } yield {

@@ -16,7 +16,7 @@ class StationRoutes[F[_]: MonadError[*[_], Throwable]: Defer: JsonDecoder](
   departures: Departures[F]
 ) extends Http4sDsl[F] {
   val routes: HttpRoutes[F] = HttpRoutes.of[F] {
-    case req @ POST -> Root / "arrival" =>
+    case req @ POST -> Root / "arrival"   =>
       req
         .asJsonDecode[Arrival]
         .flatMap(arrivals.register)
@@ -29,11 +29,11 @@ class StationRoutes[F[_]: MonadError[*[_], Throwable]: Defer: JsonDecoder](
 
   }
 
-  def handleArrivalErrors: ArrivalError => F[Response[F]] = {
-    case ArrivalError.UnexpectedTrain(id) => BadRequest(s"Unexpected train $id")
+  def handleArrivalErrors: ArrivalError => F[Response[F]] = { case ArrivalError.UnexpectedTrain(id) =>
+    BadRequest(s"Unexpected train $id")
   }
 
-  def handleDepartureErrors: DepartureError => F[Response[F]] = {
-    case DepartureError.UnexpectedDestination(city) => BadRequest(s"Unexpected city $city")
+  def handleDepartureErrors: DepartureError => F[Response[F]] = { case DepartureError.UnexpectedDestination(city) =>
+    BadRequest(s"Unexpected city $city")
   }
 }
