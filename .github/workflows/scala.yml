@@ -11,10 +11,8 @@ jobs:
         include:
           - os: ubuntu-latest
             java: 11
-            jobtype: 1
           - os: windows-latest
             java: 11
-            jobtype: 1
     runs-on: ${{ matrix.os }}
     env:
       # define Java options for both official sbt and sbt-extras
@@ -36,13 +34,7 @@ jobs:
           key: ${{ runner.os }}-sbt-cache-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
       - name: Build and test
         run: |
-            1)
-              sbt -v "scalafmtCheckAll; +test;"
-              ;;
-            *)
-              echo unknown jobtype
-              exit 1
-          esac
+          sbt -v "scalafmtCheckAll; +test;"
           rm -rf "$HOME/.ivy2/local" || true
           find $HOME/Library/Caches/Coursier/v1        -name "ivydata-*.properties" -delete || true
           find $HOME/.ivy2/cache                       -name "ivydata-*.properties" -delete || true
