@@ -12,12 +12,9 @@ jobs:
           - os: ubuntu-latest
             java: 11
             jobtype: 1
-          - os: ubuntu-latest
-            java: 11
-            jobtype: 2
           - os: windows-latest
             java: 11
-            jobtype: 2
+            jobtype: 1
           - os: ubuntu-latest
             java: 11
             jobtype: 3
@@ -42,15 +39,8 @@ jobs:
           key: ${{ runner.os }}-sbt-cache-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
       - name: Build and test
         run: |
-          case ${{ matrix.jobtype }} in
             1)
               sbt -v "scalafmtCheckAll; +test;"
-              ;;
-            2)
-              sbt -v "scripted actions/*"
-              ;;
-            3)
-              sbt -v "dependency-management/*"
               ;;
             *)
               echo unknown jobtype
