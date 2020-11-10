@@ -40,15 +40,15 @@ object Dependencies {
 
 object Version {
   val cats = "2.2.0"
-  val zio = "1.0.1"
-  val zioCats = "2.1.4.0"
-  val slf4j = "1.7.28"
+  val zio = "1.0.3"
+  val zioCats = "2.1.4.1"
+  val slf4j = "1.7.30"
   val fs2Core = "2.4.2"
   val kindProjector = "0.11.0"
-  val http4s = "1.0.0-M4"
-  val ciris = "1.2.0"
+  val http4s = "1.0.0-M5"
+  val ciris = "1.2.1"
   val circe = "0.13.0"
   val newtype = "0.4.4"
   val neutron = "0.0.2+37-d92ef362-SNAPSHOT"
-  val contextApplied = "0.1.3"
+  val contextApplied = "0.1.4"
 }
