@@ -44,7 +44,7 @@ object Version {
   val zioCats = "2.1.4.1"
   val slf4j = "1.7.30"
   val fs2Core = "2.4.2"
-  val kindProjector = "0.11.0"
+  val kindProjector = "0.11.1"
   val http4s = "1.0.0-M5"
   val ciris = "1.2.1"
   val circe = "0.13.0"
