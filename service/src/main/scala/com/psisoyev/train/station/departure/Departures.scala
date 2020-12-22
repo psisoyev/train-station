@@ -3,9 +3,8 @@ package com.psisoyev.train.station.departure
 import cats.Monad
 import cats.implicits._
 import com.psisoyev.train.station.Event.Departed
-import com.psisoyev.train.station.Logger._
 import com.psisoyev.train.station._
-import com.psisoyev.train.station.departure.Departures.{ Departure, DepartureError }
+import com.psisoyev.train.station.departure.Departures.{Departure, DepartureError}
 import cr.pulsar.Producer
 import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
@@ -25,7 +24,7 @@ object Departures {
     implicit val departureDecoder: Decoder[Departure] = deriveDecoder
   }
 
-  def make[F[_]: Monad: UUIDGen: Logger](
+  def make[F[_] : Monad : UUIDGen : Logger](
     city: City,
     connectedTo: List[City],
     producer: Producer[F, Event]
@@ -43,20 +42,22 @@ object Departures {
       }
     }
 
-    override def register(departure: Departure): F[Either[DepartureError, Departed]] =
-      validated(departure) {
-        F.newEventId
-          .map {
-            Departed(
-              _,
-              departure.id,
-              From(city),
-              departure.to,
-              departure.time,
-              departure.actual.toTimestamp
-            )
-          }
-          .flatTap(producer.send_)
-      }
+    override def register(departure: Departure): F[Either[DepartureError, Departed]] = {
+      F.info(s"Registering $departure") *>
+        validated(departure) {
+          F.newEventId
+            .map {
+              Departed(
+                _,
+                departure.id,
+                From(city),
+                departure.to,
+                departure.time,
+                departure.actual.toTimestamp
+              )
+            }
+            .flatTap(producer.send_)
+        } <* F.info(s"Train ${departure.id.value} successfully departed")
+    }
   }
 }
