@@ -49,11 +49,11 @@ object Resources {
       Producer.withLogger[F, E](client, topic(config.pulsar, config.city), EventLogger.outgoingEvents)
 
     for {
-      config    <- Resource.liftF(Config.load[F])
+      config    <- Resource.eval(Config.load[F])
       client    <- Pulsar.create[F](config.pulsar.url)
       producer  <- producer(client, config)
       consumers <- config.connectedTo.traverse(consumer(client, config, _))
-      trainRef  <- Resource.liftF(Ref.of[F, Map[TrainId, ExpectedTrain]](Map.empty))
+      trainRef  <- Resource.eval(Ref.of[F, Map[TrainId, ExpectedTrain]](Map.empty))
     } yield Resources(config, producer, consumers, trainRef)
   }
 }
