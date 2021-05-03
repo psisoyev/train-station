@@ -1,12 +1,12 @@
 package com.psisoyev.train.station
 
-import cats.effect.concurrent.Ref
-import cats.effect.{ Concurrent, ContextShift, Resource }
+import cats.effect.{ Concurrent, Resource }
 import cats.implicits._
 import cats.{ Inject, Parallel }
 import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
 import cr.pulsar.{ Consumer, Producer, Pulsar, Subscription, Topic, Config => PulsarConfig }
 import io.circe.Encoder
+import cats.effect.Ref
 
 final case class Resources[F[_], E](
   config: Config,
