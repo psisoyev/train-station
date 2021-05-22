@@ -4,12 +4,12 @@ import java.util.UUID
 import cats.Applicative
 import cats.implicits._
 import cats.effect.Sync
-import cats.effect.concurrent.Ref
 import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
 import cr.pulsar.{ MessageKey, Producer }
 import org.apache.pulsar.client.api.MessageId
 import zio.Task
 import zio.test.DefaultRunnableSpec
+import cats.effect.Ref
 
 trait BaseSpec extends DefaultRunnableSpec {
   type F[A]           = Task[A]
