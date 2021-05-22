@@ -1,6 +1,6 @@
 package com.psisoyev.train.station
 
-import cats.effect.{ Async, ContextShift }
+import cats.effect.Async
 import cats.implicits._
 import ciris._
 import com.psisoyev.train.station.Config.HttpPort
