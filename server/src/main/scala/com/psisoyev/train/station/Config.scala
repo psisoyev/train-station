@@ -1,6 +1,6 @@
 package com.psisoyev.train.station
 
-import cats.effect.{ Async, ContextShift }
+import cats.effect.kernel.Async
 import cats.implicits._
 import ciris._
 import com.psisoyev.train.station.Config.HttpPort
@@ -26,13 +26,13 @@ object Config {
   implicit def listDecoder[A: ConfigDecoder[String, *]]: ConfigDecoder[String, List[A]] =
     ConfigDecoder.lift(_.split(",").map(_.trim).toList.traverse(A.decode(None, _)))
 
-  implicit class ConfigOps[A](cv: ConfigValue[A]) {
+  implicit class ConfigOps[F[_], A](cv: ConfigValue[F, A]) {
     // Same as `default` but it allows you to use the underlying type of the newtype
-    def withDefault[T](value: T)(implicit ev: Coercible[T, A]): ConfigValue[A] =
+    def withDefault[T](value: T)(implicit ev: Coercible[T, A]): ConfigValue[F, A] =
       cv.default(value.coerce[A])
   }
 
-  def pulsarConfigValue: ConfigValue[PulsarConfig] =
+  def pulsarConfigValue[F[_]]: ConfigValue[F, PulsarConfig] =
     (
       env("PULSAR_TENANT").as[PulsarTenant].withDefault("public"),
       env("PULSAR_NAMESPACE").as[PulsarNamespace].withDefault("default"),
@@ -46,7 +46,7 @@ object Config {
         .build
     }
 
-  private def value: ConfigValue[Config] =
+  private def value[F[_]]: ConfigValue[F, Config] =
     (
       pulsarConfigValue,
       env("HTTP_PORT").as[HttpPort].withDefault(8080),
@@ -54,5 +54,5 @@ object Config {
       env("CONNECTED_TO").as[List[City]]
     ).parMapN(Config.apply)
 
-  def load[F[_]: Async: ContextShift]: F[Config] = value.load[F]
+  def load[F[_]: Async]: F[Config] = value[F].load
 }

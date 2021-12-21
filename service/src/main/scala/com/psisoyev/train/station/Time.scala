@@ -17,8 +17,8 @@ object Time {
 
   implicit def instance[F[_]: Clock: Functor]: Time[F] = new Time[F] {
     override def timestamp: F[Timestamp] =
-      F.realTime(TimeUnit.MILLISECONDS)
-        .map(Instant.ofEpochMilli)
+      F.realTime
+        .map(ms => Instant.ofEpochMilli(ms.toMillis))
         .map(Timestamp(_))
   }
 }

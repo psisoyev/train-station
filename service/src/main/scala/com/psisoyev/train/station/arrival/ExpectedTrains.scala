@@ -1,10 +1,10 @@
 package com.psisoyev.train.station.arrival
 
 import cats.Functor
+import cats.effect.Ref
 import cats.implicits._
-import cats.effect.concurrent.Ref
-import com.psisoyev.train.station.{ Expected, From, TrainId }
 import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
+import com.psisoyev.train.station.{ Expected, From, TrainId }
 
 trait ExpectedTrains[F[_]] {
   def get(id: TrainId): F[Option[ExpectedTrain]]

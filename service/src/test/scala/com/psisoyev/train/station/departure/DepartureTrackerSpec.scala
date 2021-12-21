@@ -1,16 +1,16 @@
 package com.psisoyev.train.station.departure
 
+import cats.effect.kernel.Ref
 import cats.implicits._
-import cats.effect.concurrent.Ref
 import com.psisoyev.train.station.BaseSpec
 import com.psisoyev.train.station.Generators._
 import com.psisoyev.train.station.Logger._
 import com.psisoyev.train.station.arrival.ExpectedTrains
 import zio.interop.catz._
 import zio.interop.catz.implicits._
-import zio.test.environment.TestEnvironment
-import zio.test.{ assert, checkM, suite, testM, ZSpec }
 import zio.test.Assertion.equalTo
+import zio.test.environment.TestEnvironment
+import zio.test.{ assert, checkM, ZSpec }
 
 object DepartureTrackerSpec extends BaseSpec {
   override def spec: ZSpec[TestEnvironment, Failure] =

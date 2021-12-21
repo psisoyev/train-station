@@ -1,13 +1,13 @@
 package com.psisoyev.train.station.arrival
 
-import cats.effect.concurrent.Ref
+import cats.effect.Ref
 import com.psisoyev.train.station.Event.Arrived
 import com.psisoyev.train.station.Generators._
 import com.psisoyev.train.station.Logger._
 import com.psisoyev.train.station.arrival.Arrivals.Arrival
 import com.psisoyev.train.station.arrival.Arrivals.ArrivalError.UnexpectedTrain
 import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
-import com.psisoyev.train.station.{ BaseSpec, EventId, To, TrainId }
+import com.psisoyev.train.station.{ BaseSpec, To }
 import zio.interop.catz._
 import zio.interop.catz.implicits._
 import zio.test.Assertion._

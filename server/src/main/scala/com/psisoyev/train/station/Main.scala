@@ -4,9 +4,8 @@ import com.psisoyev.train.station.Event.Departed
 import com.psisoyev.train.station.UUIDGen._
 import com.psisoyev.train.station.arrival.{ Arrivals, ExpectedTrains }
 import com.psisoyev.train.station.departure.{ DepartureTracker, Departures }
-import cr.pulsar.schema.circe.circeBytesInject
 import fs2.Stream
-import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.implicits._
 import zio._
 import zio.interop.catz._
@@ -15,10 +14,7 @@ import zio.interop.catz.implicits._
 object Main extends zio.App {
   type F[A] = Task[A]
 
-  override def run(args: List[String]): ZIO[ZEnv, Nothing, ExitCode] = {
-
-    val ec = platform.executor.asEC
-
+  override def run(args: List[String]): ZIO[ZEnv, Nothing, ExitCode] =
     Resources
       .make[F, Event]
       .use { case Resources(config, producer, consumers, trainRef) =>
@@ -29,14 +25,13 @@ object Main extends zio.App {
 
         val routes = new StationRoutes[F](arrivals, departures).routes.orNotFound
 
-        val httpServer = Task.concurrentEffectWith { implicit CE =>
-          BlazeServerBuilder[F](ec)
+        val httpServer =
+          BlazeServerBuilder[F]
             .bindHttp(config.httpPort.value, "0.0.0.0")
             .withHttpApp(routes)
             .serve
             .compile
             .drain
-        }
 
         val departureListener =
           Stream
@@ -54,5 +49,4 @@ object Main extends zio.App {
             .unit
       }
       .exitCode
-  }
 }
