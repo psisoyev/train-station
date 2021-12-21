@@ -40,7 +40,7 @@ services:
       - "CONNECTED_TO=Bern"
 
   pulsar:
-    image: kafkaesqueio/pulsar:2.6.1_kesque_3_jdk11
+    image: apachepulsar/pulsar:2.9.0
     ports:
       - "8080:8080"
       - "6650:6650"
