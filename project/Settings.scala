@@ -30,7 +30,7 @@ object Settings {
       mainClass in Compile := Some("com.psisoyev.train.station.Main"),
       addCompilerPlugin(contextApplied),
       addCompilerPlugin(kindProjector),
-      dockerBaseImage := "openjdk:jre-alpine",
+      dockerBaseImage := "openjdk:11-jre",
       dockerUpdateLatest := true
     )
 
