@@ -51,7 +51,7 @@ object Version {
   val ciris          = "2.3.3"
   val circe          = "0.14.2"
   val newtype        = "0.4.4"
-  val neutron        = "0.0.8"
+  val neutron        = "0.0.9"
   val contextApplied = "0.1.4"
   val bm4            = "0.3.1"
 }

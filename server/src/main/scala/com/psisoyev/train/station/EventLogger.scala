@@ -1,20 +1,17 @@
 package com.psisoyev.train.station
 
-import cr.pulsar.Topic
+import cr.pulsar.Topic.URL
+import cr.pulsar.{ Logger => NeutronLogger }
 import io.circe.Encoder
 import io.circe.syntax._
 
 object EventLogger {
+  private def logEvent[F[_]: Logger, E: Encoder](prefix: String)(topic: URL, event: E): F[Unit] =
+    F.info(s"[$prefix] [$topic] ${event.asJson.noSpaces}")
 
-  private def logEvents[F[_]: Logger, E: Encoder](
-    prefix: String
-  ): E => Topic.URL => F[Unit] =
-    event => topic => F.info(s"[$prefix] [$topic] ${event.asJson.noSpaces}")
+  def incomingEvents[F[_]: Logger, E: Encoder]: NeutronLogger[F, E] =
+    (topic: URL, e: E) => logEvent("Incoming")(topic, e)
 
-  def incomingEvents[F[_]: Logger, E: Encoder]: E => Topic.URL => F[Unit] =
-    logEvents[F, E]("Incoming")
-
-  def outgoingEvents[F[_]: Logger, E: Encoder]: E => Topic.URL => F[Unit] =
-    logEvents[F, E]("Outgoing")
-
+  def outgoingEvents[F[_]: Logger, E: Encoder]: NeutronLogger[F, E] =
+    (topic: URL, e: E) => logEvent("Outgoing")(topic, e)
 }

@@ -4,13 +4,12 @@ import cats.effect.kernel.Async
 import cats.implicits._
 import ciris._
 import com.comcast.ip4s.Port
-import cr.pulsar.Config.{PulsarNamespace, PulsarTenant, PulsarURL}
-import cr.pulsar.{Config => PulsarConfig}
+import cr.pulsar.Pulsar.PulsarURL
 import io.estatico.newtype.Coercible
 import io.estatico.newtype.ops._
 
 case class Config(
-  pulsar: PulsarConfig,
+  pulsarUrl: PulsarURL,
   httpPort: Port,
   city: City,
   connectedTo: List[City]
@@ -32,23 +31,9 @@ object Config {
   implicit final val stringComcastPortDecoder: ConfigDecoder[String, Port] =
     ConfigDecoder[String].mapOption("com.comcast.ip4s.Port")(Port.fromString)
 
-  def pulsarConfigValue[F[_]]: ConfigValue[F, PulsarConfig] =
-    (
-      env("PULSAR_TENANT").as[PulsarTenant].withDefault("public"),
-      env("PULSAR_NAMESPACE").as[PulsarNamespace].withDefault("default"),
-      env("PULSAR_SERVICE_URL").as[PulsarURL].withDefault("pulsar://localhost:6650")
-    ).mapN { case (tenant, namespace, url) =>
-      PulsarConfig
-        .Builder
-        .withTenant(tenant)
-        .withNameSpace(namespace)
-        .withURL(url)
-        .build
-    }
-
   private def value[F[_]]: ConfigValue[F, Config] =
     (
-      pulsarConfigValue,
+      env("PULSAR_SERVICE_URL").as[PulsarURL].withDefault("pulsar://localhost:6650"),
       env("HTTP_PORT").as[Port],
       env("CITY").as[City],
       env("CONNECTED_TO").as[List[City]]

@@ -6,8 +6,7 @@ import cats.implicits._
 import cats.{ Inject, Parallel }
 import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
 import cr.pulsar.Producer.Options
-import cr.pulsar.internal.FutureLift._
-import cr.pulsar.{ Consumer, Producer, Pulsar, Subscription, Topic, Config => PulsarConfig }
+import cr.pulsar.{ Consumer, Producer, Pulsar, Subscription, Topic }
 import io.circe.{ Decoder, Encoder }
 import io.circe._
 import io.circe.parser.decode
@@ -36,15 +35,10 @@ object Resources {
     F[_]: Async: Logger: Parallel,
     E: Decoder: Encoder
   ]: Resource[F, Resources[F, E]] = {
-    def topic(config: PulsarConfig, city: City) =
-      Topic
-        .Builder
-        .withName(Topic.Name(city.value.toLowerCase))
-        .withConfig(config)
-        .withType(Topic.Type.Persistent)
-        .build
+    def topic(city: City): Topic.Single =
+      Topic.simple(Topic.Name(city.value.toLowerCase), Topic.Type.Persistent)
 
-    def consumer(client: Pulsar.T, config: Config, city: City): Resource[F, Consumer[F, E]] = {
+    def consumer(client: Pulsar.Underlying, config: Config, city: City): Resource[F, Consumer[F, E]] = {
       val name         = s"${city.value}-${config.city.value}"
       val subscription =
         Subscription
@@ -58,17 +52,17 @@ object Resources {
           .Options[F, E]()
           .withLogger(EventLogger.incomingEvents)
 
-      Consumer.make[F, E](client, topic(config.pulsar, city), subscription, options)
+      Consumer.make[F, E](client, topic(city), subscription, options)
     }
 
-    def producer(client: Pulsar.T, config: Config): Resource[F, Producer[F, E]] = {
+    def producer(client: Pulsar.Underlying, config: Config): Resource[F, Producer[F, E]] = {
       val opts = Options[F, E]().withLogger(EventLogger.outgoingEvents)
-      Producer.make[F, E](client, topic(config.pulsar, config.city), opts)
+      Producer.make[F, E](client, topic(config.city), opts)
     }
 
     for {
       config    <- Resource.eval(Config.load[F])
-      client    <- Pulsar.make[F](config.pulsar.url)
+      client    <- Pulsar.make[F](config.pulsarUrl)
       producer  <- producer(client, config)
       consumers <- config.connectedTo.traverse(consumer(client, config, _))
       trainRef  <- Resource.eval(Ref.of[F, Map[TrainId, ExpectedTrain]](Map.empty))
