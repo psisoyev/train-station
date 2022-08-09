@@ -1,17 +1,17 @@
 package com.psisoyev.train.station
 
 import cats.Applicative
-import cats.effect.{ Ref, Sync }
+import cats.effect.{Ref, Sync}
 import cats.implicits._
 import com.psisoyev.train.station.arrival.ExpectedTrains.ExpectedTrain
-import cr.pulsar.{ MessageKey, Producer }
+import cr.pulsar.{MessageKey, Producer}
 import org.apache.pulsar.client.api.MessageId
 import zio.Task
-import zio.test.DefaultRunnableSpec
+import zio.test.ZIOSpecDefault
 
 import java.util.UUID
 
-trait BaseSpec extends DefaultRunnableSpec {
+trait BaseSpec extends ZIOSpecDefault {
   type F[A]           = Task[A]
   type ExpectedTrains = Map[TrainId, ExpectedTrain]
 

@@ -10,7 +10,7 @@ import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
 
 trait Departures[F[_]] {
-  def register(departure: Departure): F[Either[DepartureError, Departed]]
+  def register(departure: Departure): F[Either[DepartureError, Event]]
 }
 
 object Departures {
@@ -29,7 +29,7 @@ object Departures {
     connectedTo: List[City],
     producer: Producer[F, Event]
   ): Departures[F] = new Departures[F] {
-    def validated(departure: Departure)(f: => F[Departed]): F[Either[DepartureError, Departed]] = {
+    def validated(departure: Departure)(f: => F[Departed]): F[Either[DepartureError, Event]] = {
       val destination = departure.to.city
 
       connectedTo.find(_ === destination) match {
@@ -42,7 +42,7 @@ object Departures {
       }
     }
 
-    override def register(departure: Departure): F[Either[DepartureError, Departed]] =
+    override def register(departure: Departure): F[Either[DepartureError, Event]] =
       F.info(s"Registering $departure") *>
         validated(departure) {
           F.newEventId

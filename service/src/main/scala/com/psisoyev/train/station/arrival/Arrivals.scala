@@ -11,7 +11,7 @@ import io.circe.Decoder
 import io.circe.generic.semiauto._
 
 trait Arrivals[F[_]] {
-  def register(arrival: Arrival): F[Either[ArrivalError, Arrived]]
+  def register(arrival: Arrival): F[Either[ArrivalError, Event]]
 }
 
 object Arrivals {
@@ -30,7 +30,7 @@ object Arrivals {
     producer: Producer[F, Event],
     expectedTrains: ExpectedTrains[F]
   ): Arrivals[F] = new Arrivals[F] {
-    def validated(arrival: Arrival)(f: ExpectedTrain => F[Arrived]): F[Either[ArrivalError, Arrived]] =
+    def validated(arrival: Arrival)(f: ExpectedTrain => F[Arrived]): F[Either[ArrivalError, Event]] =
       expectedTrains
         .get(arrival.trainId)
         .flatMap {
@@ -42,7 +42,7 @@ object Arrivals {
             f(train).map(_.asRight[ArrivalError])
         }
 
-    def register(arrival: Arrival): F[Either[ArrivalError, Arrived]] =
+    def register(arrival: Arrival): F[Either[ArrivalError, Event]] =
       validated(arrival) { train =>
         F.newEventId
           .map {

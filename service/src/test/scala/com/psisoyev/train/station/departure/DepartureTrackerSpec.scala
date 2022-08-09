@@ -1,7 +1,7 @@
 package com.psisoyev.train.station.departure
 
 import cats.effect.kernel.Ref
-import cats.implicits._
+import cats.syntax.all._
 import com.psisoyev.train.station.BaseSpec
 import com.psisoyev.train.station.Generators._
 import com.psisoyev.train.station.Logger._
@@ -9,14 +9,13 @@ import com.psisoyev.train.station.arrival.ExpectedTrains
 import zio.interop.catz._
 import zio.interop.catz.implicits._
 import zio.test.Assertion.equalTo
-import zio.test.environment.TestEnvironment
-import zio.test.{ assert, checkM, ZSpec }
+import zio.test.{assert, check}
 
 object DepartureTrackerSpec extends BaseSpec {
-  override def spec: ZSpec[TestEnvironment, Failure] =
+  override def spec =
     suite("DepartureTrackerSpec")(
-      testM("Expect trains departing to $city") {
-        checkM(departedList, city) { (departed, city) =>
+      test("Expect trains departing to $city") {
+        check(departedList, city) { (departed, city) =>
           for {
             ref           <- Ref.of[F, ExpectedTrains](Map.empty)
             expectedTrains = ExpectedTrains.make[F](ref)
