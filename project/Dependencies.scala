@@ -15,7 +15,7 @@ object Dependencies {
   val http4s = Seq(
     "org.http4s" %% "http4s-dsl"          % Version.http4s,
     "org.http4s" %% "http4s-circe"        % Version.http4s,
-    "org.http4s" %% "http4s-blaze-server" % Version.http4s
+    "org.http4s" %% "http4s-ember-server" % Version.http4s
   )
 
   val fs2Core = "co.fs2" %% "fs2-core" % Version.fs2Core
