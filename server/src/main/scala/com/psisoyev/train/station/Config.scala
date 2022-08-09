@@ -3,23 +3,20 @@ package com.psisoyev.train.station
 import cats.effect.kernel.Async
 import cats.implicits._
 import ciris._
-import com.psisoyev.train.station.Config.HttpPort
-import cr.pulsar.Config.{ PulsarNamespace, PulsarTenant, PulsarURL }
-import cr.pulsar.{ Config => PulsarConfig }
+import com.comcast.ip4s.Port
+import cr.pulsar.Config.{PulsarNamespace, PulsarTenant, PulsarURL}
+import cr.pulsar.{Config => PulsarConfig}
 import io.estatico.newtype.Coercible
-import io.estatico.newtype.macros.newtype
 import io.estatico.newtype.ops._
 
 case class Config(
   pulsar: PulsarConfig,
-  httpPort: HttpPort,
+  httpPort: Port,
   city: City,
   connectedTo: List[City]
 )
 
 object Config {
-  @newtype case class HttpPort(value: Int)
-
   implicit def coercibleDecoder[A: Coercible[B, *], B: ConfigDecoder[String, *]]: ConfigDecoder[String, A] =
     ConfigDecoder[String, B].map(_.coerce[A])
 
@@ -31,6 +28,9 @@ object Config {
     def withDefault[T](value: T)(implicit ev: Coercible[T, A]): ConfigValue[F, A] =
       cv.default(value.coerce[A])
   }
+
+  implicit final val stringComcastPortDecoder: ConfigDecoder[String, Port] =
+    ConfigDecoder[String].mapOption("com.comcast.ip4s.Port")(Port.fromString)
 
   def pulsarConfigValue[F[_]]: ConfigValue[F, PulsarConfig] =
     (
@@ -49,7 +49,7 @@ object Config {
   private def value[F[_]]: ConfigValue[F, Config] =
     (
       pulsarConfigValue,
-      env("HTTP_PORT").as[HttpPort].withDefault(8080),
+      env("HTTP_PORT").as[Port],
       env("CITY").as[City],
       env("CONNECTED_TO").as[List[City]]
     ).parMapN(Config.apply)
