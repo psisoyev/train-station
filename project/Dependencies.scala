@@ -34,15 +34,16 @@ object Dependencies {
 
   val ciris = "is.cir" %% "ciris" % Version.ciris
 
-  val contextApplied = "org.augustjune" %% "context-applied" % Version.contextApplied
-  val kindProjector  = "org.typelevel"  %% "kind-projector"  % Version.kindProjector cross CrossVersion.full
+  val contextApplied = "org.augustjune" %% "context-applied"    % Version.contextApplied
+  val kindProjector  = "org.typelevel"  %% "kind-projector"     % Version.kindProjector cross CrossVersion.full
+  val bm4            = "com.olegpy"     %% "better-monadic-for" % Version.bm4
 }
 
 object Version {
-  val zio            = "1.0.16"
+  val zio            = "2.0.0"
   val cats           = "2.8.0"
   val catsEffect     = "3.3.14"
-  val zioCats        = "3.2.9.1"
+  val zioCats        = "3.3.0"
   val slf4j          = "1.7.36"
   val fs2Core        = "3.2.3"
   val http4s         = "0.23.14"
@@ -52,4 +53,5 @@ object Version {
   val newtype        = "0.4.4"
   val neutron        = "0.0.8"
   val contextApplied = "0.1.4"
+  val bm4            = "0.3.1"
 }
