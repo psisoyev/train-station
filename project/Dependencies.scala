@@ -15,7 +15,7 @@ object Dependencies {
   val http4s = Seq(
     "org.http4s" %% "http4s-dsl"          % Version.http4s,
     "org.http4s" %% "http4s-circe"        % Version.http4s,
-    "org.http4s" %% "http4s-blaze-server" % Version.http4s
+    "org.http4s" %% "http4s-ember-server" % Version.http4s
   )
 
   val fs2Core = "co.fs2" %% "fs2-core" % Version.fs2Core
@@ -45,7 +45,7 @@ object Version {
   val zioCats        = "3.2.9.1"
   val slf4j          = "1.7.36"
   val fs2Core        = "3.2.3"
-  val http4s         = "0.23.12"
+  val http4s         = "0.23.14"
   val kindProjector  = "0.13.2"
   val ciris          = "2.3.3"
   val circe          = "0.14.2"
