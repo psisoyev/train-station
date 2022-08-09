@@ -2,10 +2,10 @@ package com.psisoyev.train.station
 
 import com.psisoyev.train.station.Event.Departed
 import com.psisoyev.train.station.UUIDGen._
-import com.psisoyev.train.station.arrival.{ Arrivals, ExpectedTrains }
-import com.psisoyev.train.station.departure.{ DepartureTracker, Departures }
+import com.psisoyev.train.station.arrival.{Arrivals, ExpectedTrains}
+import com.psisoyev.train.station.departure.{DepartureTracker, Departures}
 import fs2.Stream
-import org.http4s.blaze.server.BlazeServerBuilder
+import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits._
 import zio._
 import zio.interop.catz._
@@ -26,12 +26,11 @@ object Main extends zio.App {
         val routes = new StationRoutes[F](arrivals, departures).routes.orNotFound
 
         val httpServer =
-          BlazeServerBuilder[F]
-            .bindHttp(config.httpPort.value, "0.0.0.0")
+          EmberServerBuilder.default[F]
             .withHttpApp(routes)
-            .serve
-            .compile
-            .drain
+            .withPort(config.httpPort)
+            .build
+            .useForever
 
         val departureListener =
           Stream
