@@ -2,7 +2,7 @@ package com.psisoyev.train.station
 
 import com.psisoyev.train.station.Event.Departed
 import zio.test.Gen._
-import zio.test.{Gen, Sized}
+import zio.test.{ Gen, Sized }
 
 object Generators {
   val trainId: Gen[Sized, TrainId]             = alphaNumericString.map(TrainId(_))

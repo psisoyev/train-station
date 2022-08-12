@@ -9,7 +9,7 @@ import com.psisoyev.train.station.arrival.ExpectedTrains
 import zio.interop.catz._
 import zio.interop.catz.implicits._
 import zio.test.Assertion.equalTo
-import zio.test.{assert, check}
+import zio.test.{ assert, check }
 
 object DepartureTrackerSpec extends BaseSpec {
   override def spec =
