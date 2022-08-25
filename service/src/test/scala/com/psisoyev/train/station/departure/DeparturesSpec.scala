@@ -2,8 +2,8 @@ package com.psisoyev.train.station.departure
 
 import com.psisoyev.train.station.Event.Departed
 import com.psisoyev.train.station.Generators._
-import com.psisoyev.train.station.departure.Departures.{Departure, DepartureError}
-import com.psisoyev.train.station.{BaseSpec, From}
+import com.psisoyev.train.station.departure.Departures.{ Departure, DepartureError }
+import com.psisoyev.train.station.{ BaseSpec, From }
 import zio.interop.catz._
 import zio.interop.catz.implicits._
 import zio.test.Assertion._
