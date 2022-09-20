@@ -48,7 +48,7 @@ object Version {
   val fs2Core        = "3.2.3"
   val http4s         = "0.23.15"
   val kindProjector  = "0.13.2"
-  val ciris          = "2.3.3"
+  val ciris          = "2.4.0"
   val circe          = "0.14.3"
   val newtype        = "0.4.4"
   val neutron        = "0.0.9"
