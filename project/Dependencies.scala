@@ -42,7 +42,7 @@ object Dependencies {
 object Version {
   val zio            = "2.0.2"
   val cats           = "2.8.0"
-  val catsEffect     = "3.3.14"
+  val catsEffect     = "3.4.2"
   val zioCats        = "3.3.0"
   val slf4j          = "2.0.3"
   val fs2Core        = "3.2.3"
