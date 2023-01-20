@@ -1,3 +1,3 @@
 addSbtPlugin("nl.gn0s1s"                 % "sbt-dotenv"          % "3.0.0")
-addSbtPlugin("com.github.sbt"            % "sbt-native-packager" % "1.9.11")
-addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"        % "0.4.1")
+addSbtPlugin("com.github.sbt"            % "sbt-native-packager" % "1.9.13")
+addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"        % "0.4.2")
