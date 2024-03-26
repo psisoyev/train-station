@@ -43,7 +43,7 @@ object Version {
   val zio            = "2.0.21"
   val cats           = "2.8.0"
   val catsEffect     = "3.5.4"
-  val zioCats        = "23.0.03"
+  val zioCats        = "23.1.0.1"
   val slf4j          = "2.0.12"
   val fs2Core        = "3.2.3"
   val http4s         = "0.23.18"
