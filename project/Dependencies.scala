@@ -49,7 +49,7 @@ object Version {
   val http4s         = "0.23.18"
   val kindProjector  = "0.13.3"
   val ciris          = "3.5.0"
-  val circe          = "0.14.8"
+  val circe          = "0.14.9"
   val newtype        = "0.4.4"
   val neutron        = "0.0.10"
   val contextApplied = "0.1.4"
